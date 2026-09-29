@@ -1,0 +1,54 @@
+stages: [build, deploy]
+
+build:fe:
+  stage: build
+  image: node:20-alpine
+  tags: ["staging"]
+  script:
+    - corepack enable
+    - yarn install --frozen-lockfile
+    - yarn build
+    - echo "$CI_COMMIT_SHA" > dist/version.txt
+    - test -d dist
+  artifacts:
+    name: "fe-dist-${CI_COMMIT_SHA}"
+    paths:
+      - dist/
+    expire_in: 7 days
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "main"
+
+deploy:staging:
+  stage: deploy
+  image: alpine:3.20
+  tags: ["staging"]
+  dependencies: ["build:fe"]
+  before_script:
+    - apk add --no-cache openssh-client rsync bash curl
+    - mkdir -p ~/.ssh && chmod 700 ~/.ssh
+    - cp "$STG_SSH_PRIVATE_KEY" ~/.ssh/id_rsa
+    - tr -d '\r' < ~/.ssh/id_rsa > ~/.ssh/id_rsa.tmp && mv ~/.ssh/id_rsa.tmp ~/.ssh/id_rsa
+    - awk 'NR==1{sub(/^\xef\xbb\xbf/,""); sub(/^[[:space:]]+/,"")} {print}' ~/.ssh/id_rsa > ~/.ssh/id_rsa.tmp && mv ~/.ssh/id_rsa.tmp ~/.ssh/id_rsa
+
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -H "$STG_DEPLOY_HOST" >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+
+  script:
+    - set -e
+    - RELEASE="${CI_COMMIT_SHORT_SHA}"
+    - SSH="ssh -o IdentitiesOnly=yes -o BatchMode=yes -o ConnectTimeout=10 -i ~/.ssh/id_rsa"
+
+    - $SSH "${STG_DEPLOY_USER}@${STG_DEPLOY_HOST}" "mkdir -p '${STG_DEPLOY_PATH}/releases/${RELEASE}'"
+    - rsync -az -e "ssh -o IdentitiesOnly=yes -o BatchMode=yes -o ConnectTimeout=10 -i ~/.ssh/id_rsa" --delete dist/ "${STG_DEPLOY_USER}@${STG_DEPLOY_HOST}:${STG_DEPLOY_PATH}/releases/${RELEASE}/"
+    - |
+      $SSH "${STG_DEPLOY_USER}@${STG_DEPLOY_HOST}" "set -e;
+      ln -sfn '${STG_DEPLOY_PATH}/releases/${RELEASE}' '${STG_DEPLOY_PATH}/current';
+      sudo -n /usr/local/bin/reload-nginx-safe.sh;
+      ls -1dt '${STG_DEPLOY_PATH}/releases/'* | tail -n +6 | xargs -r rm -rf;
+      curl -fsS http://127.0.0.1/ >/dev/null;"
+  environment:
+    name: staging
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"'

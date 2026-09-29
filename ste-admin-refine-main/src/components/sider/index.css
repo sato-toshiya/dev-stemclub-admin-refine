@@ -1,0 +1,8 @@
+/* Make menu items rectangular (no rounded corners), including active state */
+.custom-sider-menu .ant-menu-item {
+  border-radius: 4px !important;
+}
+
+.custom-sider-menu .ant-menu-item-selected {
+  border-radius: 4px !important;
+}

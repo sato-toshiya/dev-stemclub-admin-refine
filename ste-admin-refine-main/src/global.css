@@ -1,0 +1,151 @@
+body {
+  margin: 0;
+  background: #f6f6f9;
+  min-height: 100vh;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.page-shell {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.page-card {
+  background: #ffffff !important;
+  border-radius: 18px !important;
+  box-shadow: 0 18px 50px rgba(39, 28, 74, 0.18);
+  border: 1px solid #e7e4f4;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.page-title {
+  color: #2d2544;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.page-subtitle {
+  color: #5c527f;
+  margin-top: 4px;
+  font-size: 13px;
+}
+
+.form-two-col {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px 24px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.ant-table-wrapper .ant-table {
+  border-radius: 10px;
+}
+
+.ant-table-wrapper .ant-table-thead > tr > th {
+  background: #fff !important;
+  color: #6b7280;
+  font-weight: 600;
+  font-size: 12px;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.ant-table-wrapper .ant-table-tbody > tr > td {
+  padding: 14px 12px;
+  font-size: 13px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.ant-table-wrapper .ant-btn.ant-btn-text {
+  padding: 0 4px;
+  height: 24px;
+}
+
+.ant-table-wrapper .ant-table-tbody > tr > td.ant-table-column-sort {
+  background: transparent !important;
+}
+
+.ant-table-wrapper .ant-table-thead > tr > th::before,
+.ant-table-wrapper .ant-table-thead > tr > td::before {
+  display: none !important;
+}
+
+.cell-strong {
+  font-weight: 600;
+}
+
+.thinScroll .ant-modal-body,
+.thinScroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.25) transparent;
+}
+
+.thinScroll .ant-modal-body::-webkit-scrollbar,
+.thinScroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.thinScroll .ant-modal-body::-webkit-scrollbar-track,
+.thinScroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.thinScroll .ant-modal-body::-webkit-scrollbar-thumb,
+.thinScroll::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 999px;
+}
+
+.thinScroll .ant-modal-body::-webkit-scrollbar-thumb:hover,
+.thinScroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.hideScroll {
+  overflow: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hideScroll::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.status .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #22c55e;
+}
+
+.status.inactive .dot {
+  background: #ef4444;
+}
